@@ -1,4 +1,5 @@
 #include "syscall.h"
+#include "thread.h"
 
 /* 无参数的系统调用 */
 #define _syscall0(NUMBER) ({				       \
@@ -53,9 +54,9 @@ uint32_t getpid() {
    return _syscall0(SYS_GETPID);
 }
 
-/* 打印字符串str */
-uint32_t write(char* str) {
-   return _syscall1(SYS_WRITE, str);
+/* 把buf中count个字符写入文件描述符fd */
+uint32_t write(int32_t fd, const void* buf, uint32_t count) {
+   return _syscall3(SYS_WRITE, fd, buf, count);
 }
 
 /* 申请size字节大小的内存,并返回结果 */
@@ -68,3 +69,22 @@ void free(void* ptr) {
    _syscall1(SYS_FREE, ptr);
 }
 
+/* 派生子进程,返回子进程pid */
+pid_t fork(void){
+   return _syscall0(SYS_FORK);
+}
+
+/* 从文件描述符fd中读取count个字节到buf */
+int32_t read(int32_t fd, void* buf, uint32_t count) {
+   return _syscall3(SYS_READ, fd, buf, count);
+}
+
+/* 输出一个字符 */
+void putchar(char char_asci) {
+   _syscall1(SYS_PUTCHAR, char_asci);
+}
+
+/* 清空屏幕 */
+void clear(void) {
+   _syscall0(SYS_CLEAR);
+}
